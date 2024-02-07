@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+       <setting name="callSettersOnNulls" value="true"/>
+    </settings>
+	
+	<typeAliases>
+		<typeAlias alias="SignInDTO" type="com.innosalt.ste.dto.User$SignIn" />
+		<typeAlias alias="SignUpDTO" type="com.innosalt.ste.dto.User$SignUp" />
+		<typeAlias alias="MyInfoDTO" type="com.innosalt.ste.dto.User$MyInfo" />
+		<typeAlias alias="MyInfoDetailDTO" type="com.innosalt.ste.dto.User$MyInfoDetail" />
+		<typeAlias alias="ResetPassDTO" type="com.innosalt.ste.dto.User$FindPassword" />
+		<typeAlias alias="UserDetail" type="com.innosalt.ste.dto.UserDetail" />
+		<typeAlias alias="CodeDTO" type="com.innosalt.ste.dto.CodeDTO" />
+	</typeAliases>
+	
+</configuration>

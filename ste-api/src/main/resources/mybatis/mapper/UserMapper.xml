@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.innosalt.ste.mapper.UserMapper">
+	<select id="loadUserByLogin" parameterType="SignInDTO" resultType="UserDetail">
+		select sn, id from USER where id = #{id} and password = #{passwordEncrypt} and status = 'NORMAL'
+	</select>
+	
+	<insert id="insertUserLoginRepo" parameterType="map">
+		insert into USER_LOGIN_REPO (sn, token, expire) values (#{sn}, #{token}, current_timestamp)
+	</insert>
+	
+	<insert id="deleteUserLoginRepo" parameterType="string">
+		delete from USER_LOGIN_REPO where sn = #{sn}
+	</insert>
+	
+	<delete id="refreshUserLoginRepo" parameterType="int">
+	<![CDATA[
+		delete from USER_LOGIN_REPO where expire < dateadd(sysdate, -#{timeout}, 'SECOND')
+	]]>
+	</delete>
+	
+	<select id="loadTokenBySn" parameterType="string" resultType="map">
+		select token as "token", expire as "expire" from USER_LOGIN_REPO where sn = #{sn}
+	</select>
+	
+	<update id="updateUserLoginRepo" parameterType="string">
+		update USER_LOGIN_REPO set expire = current_timestamp where sn = #{sn}
+	</update>
+	
+	<select id="loadUserBySn" parameterType="string" resultType="UserDetail">
+		select sn, id, status from USER where sn = #{sn}
+	</select>
+	
+	<select id="selectUserAcct" parameterType="string" resultType="MyInfoDTO">
+		select id, name, acct_no as acctNoEncrypt from USER u inner join USER_ACCT a on u.sn = a.sn where u.sn = #{sn}
+	</select>
+	
+	<select id="selectUserDetail" parameterType="string" resultType="MyInfoDetailDTO">
+		select id, name, hpno as hpnoEncrypt, email, addr_type, addr, addr_detail from USER u inner join USER_DETAIL a on u.sn = a.sn where u.sn = #{sn}
+	</select>
+	
+	<select id="checkDuplicateId" parameterType="string" resultType="int">
+		select count(1) from USER where id = #{id} 
+	</select>
+
+	<select id="selectUserByDi" parameterType="string" resultType="map">
+		select u.sn as "sn", u.id as "id" from USER u inner join USER_IDEN a on u.sn = a.sn where di = #{di} and status = 'NORMAL'
+	</select>
+	
+	<select id="checkNormalId" parameterType="string" resultType="int">
+		select count(1) from USER where id = #{id} and status = 'NORMAL' 
+	</select>
+		
+	<select id="selectNextUsersn" resultType="string">
+		select 'P'||lpad(user_seq.nextval, 9, '0') as sn from dual
+	</select>
+	
+	<insert id="insertUserIdentity" parameterType="SignUpDTO">
+		insert into USER_IDEN(sn, name, hpno, ci, di, birth, gender, nation, reg_dt) 
+		values (#{sn}, #{name}, #{hpnoEncrypt}, #{ciEncrypt}, #{di}, #{birth}, #{gender}, #{nation}, current_timestamp)
+	</insert>
+	
+	<insert id="insertUser" parameterType="SignUpDTO">
+		insert into USER(sn, name, id, password, hpno, status, kind, identy_yn, reg_dt) 
+		values (#{sn}, #{name}, #{id}, #{passwordEncrypt}, #{hpnoEncrypt}, 'NORMAL', 'P', 'Y', current_timestamp)
+	</insert>
+	
+	<insert id="insertUserAcct" parameterType="SignUpDTO">
+		insert into USER_ACCT(sn, acct_no) values (#{sn}, #{acctNoEncrypt})
+	</insert>
+	
+	<insert id="insertUserDetail" parameterType="SignUpDTO">
+		insert into USER_DETAIL(sn, terms1, terms2, terms3, terms4, terms5) values (#{sn}, #{term1}, #{term2}, #{term3}, #{term4}, #{term5})
+	</insert>
+	
+	<select id="selectFavoriteSymbols" parameterType="string" resultType="string">
+		select symbol from USER_FAVORITE where sn = #{sn}
+	</select>
+	
+	<insert id="insertFavoriteSymbol" parameterType="map">
+		insert into USER_FAVORITE(sn, symbol) values (#{sn}, #{symbol})
+	</insert>
+	
+	<delete id="deleteFavoriteSymbol" parameterType="map">
+		delete from USER_FAVORITE where sn = #{sn} and symbol = #{symbol}
+	</delete>
+	
+	<insert id="insertUserLogin" parameterType="map">
+		insert into USER_LOGIN (login_type, sn, ipaddr, reg_dt) values (#{type}, #{sn}, #{ip}, current_timestamp)
+	</insert>
+	
+	<update id="updatePassword" parameterType="ResetPassDTO">
+		update USER set password = #{passwordEncrypt} where sn = #{sn}
+	</update>
+	
+	<update id="updateUserDetail" parameterType="MyInfoDetailDTO">
+		update USER_DETAIL set email = #{email}, addr_type = #{addr_type}, addr = #{addr}, addr_detail = #{addr_detail} where sn = #{sn};
+	</update>
+	
+	<select id="deleteUser" statementType="CALLABLE" parameterType="map">
+    { CALL USER_WITHDRAW(
+            #{sn},
+            #{result, mode=OUT, jdbcType=VARCHAR, javaType=string}, #{reslut_msg, mode=OUT, jdbcType=VARCHAR, javaType=string}
+        )
+    }
+    </select>
+	
+</mapper>

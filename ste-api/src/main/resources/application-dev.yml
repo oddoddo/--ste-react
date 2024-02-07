@@ -1,0 +1,9 @@
+# log level
+logging:
+  level:
+    root: debug
+
+api:
+  identity:
+    mok_url: https://api-dev.krste.co.kr/v1/users/verification/mok_result
+    key_info: /home/innosalt/conf/mok_keyInfo.dat

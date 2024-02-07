@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.innosalt.ste.mapper.CodeMapper">
+	<select id="selectCode" resultType="CodeDTO">
+		select * from CODE;
+	</select>
+	
+	<insert id="insertLog" parameterType="com.innosalt.ste.dto.LogDTO">
+		insert into USER_LOG (seq, user_sn, req_url, req_method, params, ipaddr, code, message, excute_time, reg_dt) values (
+			log_seq.nextval, #{user_sn}, #{req_url}, #{req_method}, #{params}, #{ipaddr}, #{code}, #{message}, #{excute_time}, current_timestamp
+		)
+	</insert>
+</mapper>

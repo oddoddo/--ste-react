@@ -1,0 +1,60 @@
+server:
+  port: 28280
+  servlet:
+    context-path: /v1
+    encoding:
+      charset: UTF-8
+      force: true
+
+# using devtool
+spring:
+  datasource:
+    driverClassName: Altibase.jdbc.driver.AltibaseDriver
+    url: jdbc:Altibase://3.35.93.235:30100/assetdb
+    username: stcust
+    password: stcust1!
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+  messages:
+    encoding: UTF-8
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  profiles:
+    active: local
+
+# log level
+logging:
+  level:
+    root: debug
+
+jwt:
+  access:
+    secret: koreastAcesskey1!
+    timeout: 300
+  refresh:
+    secret: koreastRefreshkey1!
+    timeout: 86400
+#3600 second = 60 * 30 = 30 second
+#86400 second = 60 * 60 * 1 = 1 hour
+
+mca:
+  server:
+    ip: 3.35.93.235
+    port: 8183
+    threads: 5
+    connections: 10
+  mkt: 1
+  md: wb
+
+api:
+  encrypt:
+    # injection though vm option
+    secretKey: ${api.encrypt.secretKey}
+  identity:
+    req_url: https://scert.mobile-ok.com/gui/service/v1/result/request
+    mok_url: http://localhost:28280/v1/users/verification/mok_result
+    key_info: classpath:mok_keyInfo.dat
